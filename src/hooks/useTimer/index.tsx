@@ -7,6 +7,10 @@ export const useTimer = ({ breakInterval }: UseTimerParameters) => {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   useEffect(() => {
+    setTimer(breakInterval);
+  }, [breakInterval]);
+
+  useEffect(() => {
     if (!isTimerRunning) {
       return;
     }

@@ -36,7 +36,7 @@ export const Application = () => {
   const startBreak = () => {
     setBreakInterval(0.05 * 60);
 
-    setTimer(0.05 * 60); // TODO: This shouldn't be required.
+    //setTimer(0.05 * 60);
 
     setNotificationMessage("Time to start working.");
 
