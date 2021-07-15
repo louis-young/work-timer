@@ -9,21 +9,21 @@ const initialNotificationMessage = "Time to take a break";
 export const Application = () => {
   Notification.requestPermission();
 
-  const [breakInterval, setBreakInterval] = useState(initialBreakInterval);
   const [notificationMessage, setNotificationMessage] = useState(
     initialNotificationMessage
   );
 
-  const { isTimerRunning, timer, time, startTimer, stopTimer, setTimer } =
-    useTimer({
-      breakInterval,
-    });
-
-  const percentageOfIntervalRemaining = Math.round(
-    (timer / breakInterval) * 100
-  );
-
-  const hasFinishedInterval = percentageOfIntervalRemaining <= 0;
+  const {
+    isTimerRunning,
+    time,
+    startTimer,
+    stopTimer,
+    resetTimer,
+    intervalPercentageRemaining,
+    hasFinishedInterval,
+  } = useTimer({
+    initialBreakInterval,
+  });
 
   useEffect(() => {
     if (isTimerRunning && hasFinishedInterval) {
@@ -34,20 +34,18 @@ export const Application = () => {
   }, [isTimerRunning, hasFinishedInterval, stopTimer, notificationMessage]);
 
   const startBreak = () => {
-    setBreakInterval(0.05 * 60);
-
-    //setTimer(0.05 * 60);
-
     setNotificationMessage("Time to start working.");
 
-    startTimer();
+    const newBreakInterval = 0.1 * 60;
+
+    resetTimer(newBreakInterval);
   };
 
   return (
     <h1 className="text-gray-700 text-3xl p-8">
       <Clock time={time} />
 
-      <ProgressIndicator progress={percentageOfIntervalRemaining} />
+      <ProgressIndicator progress={intervalPercentageRemaining} />
 
       <button onClick={startTimer}>Start</button>
       <button onClick={stopTimer}>Stop</button>

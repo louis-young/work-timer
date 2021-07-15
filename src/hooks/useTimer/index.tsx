@@ -1,14 +1,26 @@
 import { useState, useEffect } from "react";
-import { getTimeFromDate } from "./utilities";
-import type { UseTimerParameters } from "./types";
+import { UseTimerParameters } from "./types";
+import { getFormattedTime } from "./utilities";
 
-export const useTimer = ({ breakInterval }: UseTimerParameters) => {
-  const [timer, setTimer] = useState(breakInterval);
+export const useTimer = ({ initialBreakInterval }: UseTimerParameters) => {
+  const [timer, setTimer] = useState(initialBreakInterval);
+  const [breakInterval, setBreakInterval] = useState(initialBreakInterval);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
-  useEffect(() => {
-    setTimer(breakInterval);
-  }, [breakInterval]);
+  const startTimer = () => {
+    setIsTimerRunning(true);
+  };
+
+  const stopTimer = () => {
+    setIsTimerRunning(false);
+  };
+
+  const resetTimer = (newBreakInterval: number) => {
+    setTimer(newBreakInterval);
+    setBreakInterval(newBreakInterval);
+
+    startTimer();
+  };
 
   useEffect(() => {
     if (!isTimerRunning) {
@@ -25,17 +37,11 @@ export const useTimer = ({ breakInterval }: UseTimerParameters) => {
     };
   }, [isTimerRunning, timer]);
 
-  const startTimer = () => {
-    setIsTimerRunning(true);
-  };
+  const time = getFormattedTime(timer);
 
-  const stopTimer = () => {
-    setIsTimerRunning(false);
-  };
+  const intervalPercentageRemaining = Math.round((timer / breakInterval) * 100);
 
-  const date = new Date(timer * 1000);
-
-  const time = getTimeFromDate(date);
+  const hasFinishedInterval = intervalPercentageRemaining <= 0;
 
   return {
     isTimerRunning,
@@ -43,6 +49,8 @@ export const useTimer = ({ breakInterval }: UseTimerParameters) => {
     time,
     startTimer,
     stopTimer,
-    setTimer,
+    resetTimer,
+    intervalPercentageRemaining,
+    hasFinishedInterval,
   };
 };
