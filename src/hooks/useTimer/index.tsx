@@ -1,29 +1,44 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { getTimeFromDate } from "./utilities";
+import type { UseTimerParameters } from "./types";
 
-const initialSeconds = 0;
-
-export const useTimer = () => {
-  const [seconds, setSeconds] = useState(initialSeconds);
+export const useTimer = ({ breakInterval }: UseTimerParameters) => {
+  const [timer, setTimer] = useState(breakInterval);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(
-      () => setSeconds((previousSeconds) => previousSeconds + 1),
+    if (!isTimerRunning) {
+      return;
+    }
+
+    const timeout = setTimeout(
+      () => setTimer((previousTimer) => previousTimer - 1),
       1000
     );
 
     return () => {
-      clearInterval(interval);
+      clearTimeout(timeout);
     };
-  }, []);
+  }, [isTimerRunning, timer]);
 
-  const reset = () => {
-    setSeconds(initialSeconds);
+  const startTimer = () => {
+    setIsTimerRunning(true);
   };
 
-  const date = new Date(seconds * 1000);
+  const stopTimer = () => {
+    setIsTimerRunning(false);
+  };
+
+  const date = new Date(timer * 1000);
 
   const time = getTimeFromDate(date);
 
-  return { seconds, time, reset };
+  return {
+    isTimerRunning,
+    timer,
+    time,
+    startTimer,
+    stopTimer,
+    setTimer,
+  };
 };
