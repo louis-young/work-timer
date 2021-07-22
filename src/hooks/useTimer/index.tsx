@@ -1,26 +1,14 @@
 import { useState, useEffect } from "react";
-import { UseTimerParameters } from "./types";
 import { getFormattedTime } from "./utilities";
+import type { UseTimerParameters } from "./types";
 
-export const useTimer = ({ initialBreakInterval }: UseTimerParameters) => {
+export const useTimer = ({
+  initialBreakInterval,
+  notificationMessage,
+}: UseTimerParameters) => {
   const [timer, setTimer] = useState(initialBreakInterval);
   const [breakInterval, setBreakInterval] = useState(initialBreakInterval);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
-
-  const startTimer = () => {
-    setIsTimerRunning(true);
-  };
-
-  const stopTimer = () => {
-    setIsTimerRunning(false);
-  };
-
-  const resetTimer = (newBreakInterval: number) => {
-    setTimer(newBreakInterval);
-    setBreakInterval(newBreakInterval);
-
-    startTimer();
-  };
 
   useEffect(() => {
     if (!isTimerRunning) {
@@ -37,20 +25,54 @@ export const useTimer = ({ initialBreakInterval }: UseTimerParameters) => {
     };
   }, [isTimerRunning, timer]);
 
+  const intervalPercentageExpended = 100 - (timer / breakInterval) * 100;
+
+  const hasIntervalFinished = intervalPercentageExpended >= 100;
+
+  useEffect(() => {
+    if (isTimerRunning && hasIntervalFinished) {
+      stopTimer();
+
+      new Notification(notificationMessage);
+
+      const audio = new Audio("alarm.mp3");
+
+      audio.play();
+    }
+  }, [isTimerRunning, hasIntervalFinished, notificationMessage]);
+
+  const startTimer = () => {
+    setIsTimerRunning(true);
+  };
+
+  const stopTimer = () => {
+    setIsTimerRunning(false);
+  };
+
+  const resetTimer = () => {
+    stopTimer();
+
+    setTimer(initialBreakInterval);
+    setBreakInterval(initialBreakInterval);
+  };
+
+  const restartTimer = (newBreakInterval: number) => {
+    setTimer(newBreakInterval);
+    setBreakInterval(newBreakInterval);
+
+    startTimer();
+  };
+
   const time = getFormattedTime(timer);
 
-  const intervalPercentageRemaining = Math.round((timer / breakInterval) * 100);
-
-  const hasFinishedInterval = intervalPercentageRemaining <= 0;
-
   return {
-    isTimerRunning,
-    timer,
     time,
+    isTimerRunning,
+    intervalPercentageExpended,
+    hasIntervalFinished,
     startTimer,
     stopTimer,
     resetTimer,
-    intervalPercentageRemaining,
-    hasFinishedInterval,
+    restartTimer,
   };
 };

@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { intervals, notifications } from "../constants";
+import { getNewBreakInterval, getNewNotificationMessage } from "../utilities";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useTimer } from "../hooks/useTimer";
-import { Clock } from "../components/Clock";
+import { Button } from "../components/Button";
 import { ProgressIndicator } from "../components/ProgressIndicator";
 
-const initialBreakInterval = 0.05 * 60;
-const initialNotificationMessage = "Time to take a break";
+const initialBreakInterval = intervals.WORK;
+const initialNotificationMessage = notifications.BREAK;
 
 export const Application = () => {
   Notification.requestPermission();
@@ -13,46 +16,79 @@ export const Application = () => {
     initialNotificationMessage
   );
 
+  const [isWorking, setIsWorking] = useState(true);
+
   const {
-    isTimerRunning,
     time,
+    isTimerRunning,
+    intervalPercentageExpended,
+    hasIntervalFinished,
     startTimer,
     stopTimer,
     resetTimer,
-    intervalPercentageRemaining,
-    hasFinishedInterval,
+    restartTimer,
   } = useTimer({
     initialBreakInterval,
+    notificationMessage,
   });
 
-  useEffect(() => {
-    if (isTimerRunning && hasFinishedInterval) {
-      stopTimer();
+  useDocumentTitle({ isWorking, time });
 
-      new Notification(notificationMessage);
-    }
-  }, [isTimerRunning, hasFinishedInterval, stopTimer, notificationMessage]);
+  const startNextInterval = () => {
+    setIsWorking((previousIsWorking) => !previousIsWorking);
 
-  const startBreak = () => {
-    setNotificationMessage("Time to start working.");
+    const newNotificationMessage = getNewNotificationMessage(!isWorking);
 
-    const newBreakInterval = 0.1 * 60;
+    setNotificationMessage(newNotificationMessage);
 
-    resetTimer(newBreakInterval);
+    const newBreakInterval = getNewBreakInterval(!isWorking);
+
+    restartTimer(newBreakInterval);
   };
 
+  const handleResetButtonClick = () => {
+    resetTimer();
+
+    setIsWorking(true);
+  };
+
+  const isStartButtonVisible = !isTimerRunning && !hasIntervalFinished;
+
+  const isStopButtonVisible = isTimerRunning;
+
+  const isStartNextIntervalButtonVisible = hasIntervalFinished;
+
   return (
-    <h1 className="text-gray-700 text-3xl p-8">
-      <Clock time={time} />
+    <section className="flex justify-center items-center min-h-screen text-center">
+      <main className="w-full max-w-sm m-auto">
+        <div className="w-full mt-8">
+          <ProgressIndicator
+            progress={intervalPercentageExpended}
+            time={time}
+            isWorking={isWorking}
+          />
+        </div>
 
-      <ProgressIndicator progress={intervalPercentageRemaining} />
+        <div className="mt-8 flex gap-4 justify-center items-center">
+          {isStartButtonVisible && (
+            <Button text="Start" type="success" onClick={startTimer} />
+          )}
 
-      <button onClick={startTimer}>Start</button>
-      <button onClick={stopTimer}>Stop</button>
+          {isStopButtonVisible && (
+            <Button text="Stop" type="default" onClick={stopTimer} />
+          )}
 
-      {hasFinishedInterval && (
-        <button onClick={startBreak}>Start new interval</button>
-      )}
-    </h1>
+          {isStartNextIntervalButtonVisible && (
+            <Button
+              text={`Start ${isWorking ? "Break" : "Work"}`}
+              type="information"
+              onClick={startNextInterval}
+            />
+          )}
+
+          <Button text="Reset" type="danger" onClick={handleResetButtonClick} />
+        </div>
+      </main>
+    </section>
   );
 };
