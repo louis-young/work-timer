@@ -37,11 +37,11 @@ export const Application = () => {
   const startNextInterval = () => {
     setIsWorking((previousIsWorking) => !previousIsWorking);
 
-    const newNotificationMessage = getNewNotificationMessage(!isWorking);
+    const newNotificationMessage = getNewNotificationMessage(isWorking);
 
     setNotificationMessage(newNotificationMessage);
 
-    const newBreakInterval = getNewBreakInterval(!isWorking);
+    const newBreakInterval = getNewBreakInterval(isWorking);
 
     restartTimer(newBreakInterval);
   };

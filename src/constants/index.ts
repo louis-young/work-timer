@@ -1,5 +1,5 @@
 export const intervals = {
-  WORK: 0.05 * 60,
+  WORK: 60 * 60,
   BREAK: 5 * 60,
 };
 

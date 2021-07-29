@@ -2,10 +2,10 @@ import { intervals, notifications } from "../constants";
 
 export const getNewNotificationMessage = (isWorking: boolean) => {
   if (isWorking) {
-    return notifications.BREAK;
+    return notifications.WORK;
   }
 
-  return notifications.WORK;
+  return notifications.BREAK;
 };
 
 export const getNewBreakInterval = (isWorking: boolean) => {
