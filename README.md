@@ -1,6 +1,6 @@
 # Work Timer
 
-A work timer implementing the Pomodoro time management technique, written in React.
+A work timer implementing the Pomodoro time management technique - built with React.
 
 ![Work Timer](documentation/work-timer.png)
 
