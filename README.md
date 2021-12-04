@@ -12,6 +12,10 @@ A work timer that allows you to work efficiently without becoming fatigued or di
 
 This was a learning project to practice using TypeScript in React and to build something useful that I could use.
 
+---
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
 ## Technologies
 
 - TypeScript.
