@@ -1,16 +1,16 @@
 # Work Timer
 
-A work timer implementing the Pomodoro time management technique - built with React.
+A work timer that implements the Pomodoro time management technique.
 
 ![Work Timer](documentation/work-timer.png)
 
 ## Description
 
-This is an application that allows you to work efficiently without becoming fatigued or distracted by helping ensure you work in small stints and take regular breaks.
+A work timer that allows you to work efficiently without becoming fatigued or distracted by helping ensure you work in small stints and take regular breaks.
 
 ## Motivation
 
-I built this application to practice using TypeScript in React and to build something useful that I could use.
+This was a learning project to practice using TypeScript in React and to build something useful that I could use.
 
 ### Available Scripts
 
