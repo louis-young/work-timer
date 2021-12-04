@@ -8,6 +8,8 @@ A work timer that implements the Pomodoro time management technique.
 
 A work timer that allows you to work efficiently without becoming fatigued or distracted by helping ensure you work in small stints and take regular breaks.
 
+Built with React and TypeScript.
+
 ## Motivation
 
 This was a learning project to practice using TypeScript in React and to build something useful that I could use.
