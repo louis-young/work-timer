@@ -1,3 +1,5 @@
+⚠️ Please note that this is an old project and does not reflect the quality of my current work.
+
 # Work Timer
 
 A work timer that implements the Pomodoro time management technique.
